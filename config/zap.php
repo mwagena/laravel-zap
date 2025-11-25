@@ -76,4 +76,9 @@ return [
         'allow_overlapping_periods' => false, // Allow periods to overlap within same schedule
     ],
 
+
+    'models' => [
+        'schedule' => \Zap\Models\Schedule::class,
+        'schedule_period' => \Zap\Models\SchedulePeriod::class,
+    ],
 ];

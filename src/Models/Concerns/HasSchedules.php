@@ -26,7 +26,7 @@ trait HasSchedules
      */
     public function schedules(): MorphMany
     {
-        return $this->morphMany(Schedule::class, 'schedulable');
+        return $this->morphMany(config('zap.models.schedule'), 'schedulable');
     }
 
     /**
@@ -145,7 +145,8 @@ trait HasSchedules
             E_USER_DEPRECATED
         );
         // Get all active schedules for this model on this date
-        $schedules = $schedules ?? \Zap\Models\Schedule::where('schedulable_type', get_class($this))
+        $scheduleClass = config('zap.models.schedule');
+        $schedules = $schedules ?? $scheduleClass::where('schedulable_type', get_class($this))
             ->where('schedulable_id', $this->getKey())
             ->active()
             ->forDate($date)
@@ -332,7 +333,8 @@ trait HasSchedules
         $iterations = 0;
         $slotInterval = $slotDuration + $bufferMinutes;
 
-        $schedules = \Zap\Models\Schedule::where('schedulable_type', get_class($this))
+        $scheduleClass = config('zap.models.schedule');
+        $schedules = $scheduleClass::where('schedulable_type', get_class($this))
             ->where('schedulable_id', $this->getKey())
             ->active()
             ->forDate($date)
@@ -458,8 +460,10 @@ trait HasSchedules
     {
         $checkDate = \Carbon\Carbon::parse($date);
 
+        $scheduleClass = config('zap.models.schedule');
+
         // Get all availability schedules for this date
-        $availabilitySchedules = Schedule::where('schedulable_type', get_class($this))
+        $availabilitySchedules = $scheduleClass::where('schedulable_type', get_class($this))
             ->where('schedulable_id', $this->getKey())
             ->availability()
             ->active()
@@ -501,7 +505,8 @@ trait HasSchedules
      */
     protected function getBlockingSchedulesForDate(string $date): \Illuminate\Support\Collection
     {
-        return Schedule::where('schedulable_type', get_class($this))
+        $scheduleClass = config('zap.models.schedule');
+        return $scheduleClass::where('schedulable_type', get_class($this))
             ->where('schedulable_id', $this->getKey())
             ->whereIn('schedule_type', [
                 ScheduleTypes::APPOINTMENT->value,

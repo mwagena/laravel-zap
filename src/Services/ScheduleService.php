@@ -37,7 +37,8 @@ class ScheduleService
             $this->validator->validate($schedulable, $attributes, $periods, $rules);
 
             // Create the schedule
-            $schedule = new Schedule($attributes);
+            $scheduleClass = config('zap.models.schedule');
+            $schedule = new $scheduleClass($attributes);
             $schedule->schedulable_type = get_class($schedulable);
             $schedule->schedulable_id = $schedulable->getKey();
             $schedule->save();

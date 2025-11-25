@@ -591,8 +591,9 @@ class ValidationService
         $conflicts = [];
         $bufferMinutes = config('zap.conflict_detection.buffer_minutes', 0);
 
+        $scheduleClass = config('zap.models.schedule');
         // Get all other active schedules for the same schedulable
-        $otherSchedules = \Zap\Models\Schedule::where('schedulable_type', $schedule->schedulable_type)
+        $otherSchedules = $scheduleClass::where('schedulable_type', $schedule->schedulable_type)
             ->where('schedulable_id', $schedule->schedulable_id)
             ->where('id', '!=', $schedule->id)
             ->active()

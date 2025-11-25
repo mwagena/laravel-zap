@@ -359,7 +359,8 @@ class ConflictDetectionService
      */
     protected function getOtherSchedules(Schedule $schedule): Collection
     {
-        return Schedule::where('schedulable_type', $schedule->schedulable_type)
+        $scheduleClass = config('zap.models.schedule');
+        return $scheduleClass::where('schedulable_type', $schedule->schedulable_type)
             ->where('schedulable_id', $schedule->schedulable_id)
             ->where('id', '!=', $schedule->id)
             ->active()
@@ -386,7 +387,8 @@ class ConflictDetectionService
         string $startTime,
         string $endTime
     ): Collection {
-        return Schedule::where('schedulable_type', get_class($schedulable))
+        $scheduleClass = config('zap.models.schedule');
+        return $scheduleClass::where('schedulable_type', get_class($schedulable))
             ->where('schedulable_id', $schedulable->getKey())
             ->active()
             ->forDate($date)
